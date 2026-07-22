@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CORAL — Reef UV Protection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,400..600&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:        #0A1128;
+    --blue:      #2E86AB;
+    --orange:    #FF8C42;
+    --green:     #2FBF71;
+    --purple:    #A64AC9;
+    --pink:      #FF5D8F;
+    --ink:       #F3F6FF;
+    --ink-dim:   #B9C3E0;
+    --glass-bg:      rgba(255,255,255,0.07);
+    --glass-bg-soft: rgba(255,255,255,0.045);
+    --glass-border:  rgba(255,255,255,0.22);
+    --glass-blur: 22px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Quicksand', sans-serif;
+    font-weight:500;
+    line-height:1.65;
+    overflow-x:hidden;
+    position:relative;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    letter-spacing:-0.01em;
+  }
+  a{color:inherit;}
+
+  /* ---------- FLOATING LIQUID BACKGROUND ---------- */
+  .orb-field{
+    position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none;
+  }
+  .orb{
+    position:absolute; border-radius:50%;
+    filter:blur(70px);
+    opacity:0.55;
+    animation:drift 26s ease-in-out infinite;
+  }
+  .orb.o1{ width:520px; height:520px; background:var(--blue); top:-10%; left:-8%; animation-duration:30s; }
+  .orb.o2{ width:420px; height:420px; background:var(--purple); top:20%; right:-10%; animation-duration:24s; animation-delay:-4s; }
+  .orb.o3{ width:380px; height:380px; background:var(--orange); bottom:-5%; left:15%; animation-duration:28s; animation-delay:-9s; }
+  .orb.o4{ width:340px; height:340px; background:var(--green); bottom:10%; right:10%; animation-duration:22s; animation-delay:-14s; }
+  .orb.o5{ width:300px; height:300px; background:var(--pink); top:50%; left:40%; animation-duration:32s; animation-delay:-6s; opacity:0.35;}
+  @keyframes drift{
+    0%,100%{ transform:translate(0,0) scale(1); }
+    33%{ transform:translate(30px,-40px) scale(1.08); }
+    66%{ transform:translate(-25px,25px) scale(0.95); }
+  }
+
+  section, header, footer, nav{ position:relative; z-index:1; }
+  section{ padding:6.5rem 8vw; }
+  @media(max-width:720px){ section{ padding:4.5rem 6vw; } }
+
+  /* ---------- GLASS PRIMITIVES ---------- */
+  .glass{
+    background:var(--glass-bg);
+    backdrop-filter:blur(var(--glass-blur)) saturate(160%);
+    -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(160%);
+    border:1px solid var(--glass-border);
+    border-radius:28px;
+    box-shadow:
+      0 8px 32px rgba(0,0,0,0.28),
+      inset 0 1px 0 rgba(255,255,255,0.25),
+      inset 0 -1px 0 rgba(255,255,255,0.04);
+  }
+  .glass-soft{
+    background:var(--glass-bg-soft);
+    backdrop-filter:blur(16px) saturate(140%);
+    -webkit-backdrop-filter:blur(16px) saturate(140%);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:22px;
+  }
+
+  .eyebrow{
+    font-size:0.78rem;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--orange);
+    font-weight:700;
+    display:flex; align-items:center; gap:0.6em;
+  }
+  .eyebrow::before{ content:""; width:22px; height:1px; background:var(--orange); display:inline-block; }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed; top:1rem; left:8vw; right:8vw; z-index:50;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:0.9rem 1.6rem;
+  }
+  .logo-word{font-family:'Fraunces',serif; font-size:1.1rem; font-weight:600;}
+  .logo-word span{color:var(--orange);}
+  nav .links{display:flex; gap:1.8rem; font-size:0.85rem; color:var(--ink-dim);}
+  nav .links a{transition:color .2s;}
+  nav .links a:hover{color:var(--ink);}
+  @media(max-width:720px){ nav .links{display:none;} }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding-top:9rem;
+  }
+  .hero-logo{
+    max-width:640px; width:90%;
+    filter:drop-shadow(0 18px 40px rgba(0,0,0,0.45));
+    margin-bottom:1rem;
+  }
+  .hero .eyebrow{ justify-content:center; margin-bottom:0.4rem;}
+  .hero h1{
+    font-size:clamp(1.6rem, 3.4vw, 2.4rem);
+    color:var(--ink);
+    font-weight:400;
+    margin-bottom:1.2rem;
+  }
+  .hero h1 em{
+    font-style:italic;
+    background:linear-gradient(95deg, var(--orange), var(--pink));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p.lead{
+    font-size:1.02rem; color:var(--ink-dim); max-width:46ch; margin:0 auto 2.2rem;
+  }
+  .cta-row{ display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
+  .btn{
+    display:inline-flex; align-items:center; gap:0.5em;
+    padding:0.9rem 1.7rem; border-radius:100px;
+    font-size:0.88rem; font-weight:600;
+    text-decoration:none; cursor:pointer;
+    transition:transform .25s ease, box-shadow .25s ease, background .25s ease;
+    border:1px solid var(--glass-border);
+  }
+  .btn-primary{
+    background:linear-gradient(100deg, var(--orange), var(--pink));
+    color:#20081a; border-color:transparent;
+  }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 14px 34px -10px rgba(255,93,143,0.55); }
+  .btn-ghost{
+    background:var(--glass-bg-soft);
+    backdrop-filter:blur(14px);
+    color:var(--ink);
+  }
+  .btn-ghost:hover{ background:rgba(255,255,255,0.12); transform:translateY(-2px); }
+
+  /* interactive glass reef card */
+  .reef-card{
+    margin-top:3rem;
+    padding:2.4rem;
+    max-width:460px; width:100%;
+  }
+  #reefSvg{ width:100%; max-width:340px; margin:0 auto; display:block; }
+  .polyp{ transition: fill 0.15s ease-out, stroke 0.15s ease-out; }
+  .reef-caption{ margin-top:1rem; font-size:0.8rem; color:var(--ink-dim); }
+  .heat-readout{ font-family:'Fraunces',serif; color:var(--orange); font-variant-numeric:tabular-nums; }
+
+  /* ---------- STAT BAND ---------- */
+  .stat-band{
+    max-width:1100px; margin:0 auto 5rem; padding:2.4rem 8vw;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1.6rem;
+  }
+  @media(max-width:720px){ .stat-band{grid-template-columns:1fr; gap:1.6rem;} }
+  .stat-card{ padding:1.8rem; text-align:center; }
+  .stat-num{ font-family:'Fraunces',serif; font-size:2.2rem; color:var(--ink); }
+  .stat-num span{ color:var(--pink); }
+  .stat-label{ font-size:0.82rem; color:var(--ink-dim); margin-top:0.4rem; }
+
+  /* ---------- TWO COL ---------- */
+  .two-col{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:3rem; align-items:center; max-width:1180px; margin:0 auto; }
+  @media(max-width:900px){ .two-col{grid-template-columns:1fr;} }
+  .two-col.reverse .art{order:2;}
+  h2{
+    font-size:clamp(1.7rem,3vw,2.3rem); color:var(--ink); margin:0.8rem 0 1.1rem; line-height:1.15;
+  }
+  .body-text{ color:var(--ink-dim); font-size:0.98rem; max-width:52ch; }
+  .body-text + .body-text{ margin-top:1rem; }
+
+  .art.glass{ padding:2rem; }
+  .gauge-row{ display:flex; align-items:center; gap:1.1rem; padding:0.7rem 0; border-bottom:1px dashed rgba(255,255,255,0.14); }
+  .gauge-row:last-child{ border-bottom:none; }
+  .gauge-year{ width:3.2rem; font-family:'Fraunces',serif; color:var(--pink); font-size:0.95rem; }
+  .gauge-bar-track{ flex:1; height:9px; background:rgba(255,255,255,0.08); border-radius:6px; overflow:hidden; }
+  .gauge-bar{ height:100%; border-radius:6px; background:linear-gradient(90deg, var(--blue), var(--orange)); }
+  .gauge-pct{ width:2.8rem; text-align:right; font-size:0.8rem; color:var(--ink-dim); }
+
+  .drop-diagram{ display:flex; flex-direction:column; align-items:center; padding:1rem; }
+  .drop-diagram svg{ width:100%; max-width:300px; }
+
+  .fact-list{ list-style:none; margin-top:1.4rem; }
+  .fact-list li{
+    display:flex; gap:0.9rem; padding:0.9rem 1.2rem; margin-bottom:0.7rem;
+    font-size:0.92rem; color:var(--ink-dim);
+    border-radius:16px;
+  }
+  .fact-list li b{ color:var(--ink); font-weight:700; font-family:'Fraunces',serif; min-width:1.8rem; }
+
+  /* ---------- CHECKLIST ---------- */
+  .checklist-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:1.4rem; margin-top:2.4rem; max-width:1180px; margin-left:auto; margin-right:auto;
+  }
+  .check-card{ padding:1.7rem; transition:transform .25s ease, background .25s ease; }
+  .check-card:hover{ transform:translateY(-4px); background:rgba(255,255,255,0.11); }
+  .check-card .icon{
+    width:40px; height:40px; border-radius:12px;
+    background:linear-gradient(135deg, var(--orange), var(--pink));
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:1rem; font-family:'Fraunces',serif; color:#20081a; font-weight:700;
+  }
+  .check-card h3{ font-size:1.05rem; color:var(--ink); margin-bottom:0.5rem; font-weight:600; }
+  .check-card p{ font-size:0.88rem; color:var(--ink-dim); }
+
+  .ingredient-tags{ display:flex; flex-wrap:wrap; gap:0.6rem; margin-top:1rem; }
+  .tag{
+    font-size:0.76rem; padding:0.4rem 0.8rem; border-radius:100px;
+    border:1px solid rgba(255,255,255,0.2); color:var(--ink-dim);
+    background:rgba(255,255,255,0.05);
+  }
+  .tag.avoid{ border-color:rgba(255,93,143,0.55); color:var(--pink); }
+  .tag.ok{ border-color:rgba(47,191,113,0.55); color:var(--green); }
+
+  /* ---------- CTA ---------- */
+  .cta-final{ text-align:center; }
+  .cta-final .glass{ max-width:700px; margin:0 auto; padding:4rem 3rem; }
+  .cta-final h2{ max-width:20ch; margin:0.8rem auto 1.2rem; }
+  .cta-final p.body-text{ margin:0 auto 2rem; text-align:center; }
+
+  footer{
+    padding:2.4rem 8vw; display:flex; justify-content:space-between; align-items:center;
+    font-size:0.8rem; color:var(--ink-dim); flex-wrap:wrap; gap:1rem;
+  }
+
+  /* ---------- REEF GAME ---------- */
+  .reef-game{ padding:2rem; max-width:900px; margin:2.4rem auto 0; }
+  .game-hud{ display:flex; align-items:center; gap:1.8rem; margin-bottom:1.2rem; flex-wrap:wrap; }
+  .hud-item{ display:flex; flex-direction:column; gap:0.3rem; }
+  .hud-label{ font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-dim); }
+  .hud-value{ font-family:'Fraunces',serif; font-size:1.5rem; color:var(--ink); }
+  .heat-track{ width:140px; height:8px; border-radius:6px; background:rgba(255,255,255,0.1); overflow:hidden; }
+  .heat-fill{ height:100%; width:0%; background:linear-gradient(90deg, var(--orange), var(--pink)); transition:width .3s ease; }
+  .hud-restart{ margin-left:auto; padding:0.55rem 1.2rem; font-size:0.76rem; }
+
+  .game-stage{
+    position:relative; height:460px; border-radius:20px; overflow:hidden;
+    background:linear-gradient(180deg, rgba(46,134,171,0.28) 0%, rgba(10,17,40,0.6) 85%);
+    border:1px solid rgba(255,255,255,0.1);
+  }
+  @media(max-width:720px){ .game-stage{ height:380px; } }
+
+  .sea-animal-layer{ position:absolute; inset:0; z-index:2; overflow:hidden; pointer-events:none; }
+  .sea-animal{
+    position:absolute; left:-60px; font-size:1.7rem;
+    animation-name:swim-across; animation-timing-function:linear; animation-fill-mode:forwards;
+    filter:drop-shadow(0 4px 8px rgba(0,0,0,0.35));
+  }
+  .sea-animal.reverse{ left:auto; right:-60px; animation-name:swim-across-rev; transform:scaleX(-1); }
+  @keyframes swim-across{
+    from{ transform:translateX(0) translateY(0); }
+    50%{ transform:translateX(60vw) translateY(-16px); }
+    to{ transform:translateX(130vw) translateY(0); }
+  }
+  @keyframes swim-across-rev{
+    from{ transform:translateX(0) scaleX(-1); }
+    50%{ transform:translateX(-60vw) translateY(-16px) scaleX(-1); }
+    to{ transform:translateX(-130vw) translateY(0) scaleX(-1); }
+  }
+
+  .bubble-layer{ position:absolute; inset:0; z-index:3; }
+  .bubble{
+    position:absolute; bottom:-60px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:50%; cursor:pointer; user-select:none;
+    animation-name:bubble-rise; animation-timing-function:linear; animation-fill-mode:forwards;
+  }
+  .bubble.good{
+    background:radial-gradient(circle at 32% 28%, rgba(255,255,255,0.9), rgba(46,134,171,0.35) 60%, rgba(46,134,171,0.12));
+    border:1px solid rgba(255,255,255,0.4);
+    box-shadow:0 0 16px rgba(46,134,171,0.4);
+  }
+  .bubble.sun{
+    background:radial-gradient(circle at 35% 30%, #fff1cf, var(--orange) 55%, #c9591f);
+    box-shadow:0 0 20px rgba(255,140,66,0.55);
+  }
+  .bubble.pop{ transform:scale(1.5); opacity:0; transition:transform .18s ease, opacity .18s ease; }
+  @keyframes bubble-rise{
+    from{ transform:translateY(0); opacity:0; }
+    8%{ opacity:1; }
+    92%{ opacity:1; }
+    to{ transform:translateY(-520px); opacity:0.7; }
+  }
+
+  .coral-bottom{ position:absolute; bottom:0; left:0; width:100%; height:46%; z-index:1; pointer-events:none; }
+  .coral-piece path{ transition:fill 1.4s ease, opacity 1.4s ease; }
+  .coral-piece.grey path{ fill:#8a90a3 !important; opacity:0.85; }
+  .coral-piece.dead path{ fill:#eef2f6 !important; opacity:0.92; }
+
+  .warming-overlay{
+    position:absolute; inset:0; z-index:5; pointer-events:none;
+    opacity:0; transition:opacity .4s ease;
+  }
+  .warming-overlay.active{ opacity:1; animation:heat-pulse 1.6s ease-in-out; }
+  @keyframes heat-pulse{
+    0%{ background:radial-gradient(circle at 50% 65%, rgba(255,93,60,0.05), rgba(255,93,60,0)); }
+    50%{ background:radial-gradient(circle at 50% 65%, rgba(255,80,40,0.6), rgba(255,140,66,0.28)); }
+    100%{ background:radial-gradient(circle at 50% 65%, rgba(255,93,60,0.18), rgba(255,93,60,0.06)); }
+  }
+
+  .fact-toast{
+    position:absolute; left:50%; top:14px; transform:translateX(-50%) translateY(-14px);
+    max-width:86%; padding:0.8rem 1.2rem; font-size:0.82rem; color:var(--ink); text-align:center;
+    z-index:6; opacity:0; pointer-events:none; transition:opacity .35s ease, transform .35s ease;
+  }
+  .fact-toast.active{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  .restart-banner{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(0.92);
+    padding:1.3rem 1.8rem; text-align:center; font-family:'Fraunces',serif; font-size:1rem; color:var(--ink);
+    z-index:7; opacity:0; pointer-events:none; transition:opacity .35s ease, transform .35s ease;
+  }
+  .restart-banner.active{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+
+  .game-legend{ display:flex; gap:1.6rem; justify-content:center; margin-top:1.1rem; font-size:0.8rem; color:var(--ink-dim); flex-wrap:wrap; }
+  .legend-dot{ display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:0.4rem; vertical-align:middle; }
+  .legend-bubble{ background:radial-gradient(circle at 32% 28%, #fff, rgba(46,134,171,0.6)); }
+  .legend-sun{ background:radial-gradient(circle at 35% 30%, #ffe9b8, var(--orange)); }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .orb{ animation:none !important; }
+    *{ transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb-field">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+  <div class="orb o4"></div>
+  <div class="orb o5"></div>
+</div>
+
+<nav class="glass-soft">
+  <div class="logo-word">CORAL<span>·watch</span></div>
+  <div class="links">
+    <a href="#warming">Warming Seas</a>
+    <a href="#sunscreen">Sunscreen</a>
+    <a href="#game">Play</a>
+    <a href="#act">Take Action</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <img src="coral-logo.png" alt="CORAL, in bold ocean-themed bubble letters" class="hero-logo">
+  <div class="eyebrow">Reef UV Protection</div>
+  <h1>Sun protection that keeps <em>you</em> covered<br>without bleaching the reef.</h1>
+  <p class="lead">Warming seas are already pushing coral past its limit. Sunscreen that rinses off in the water adds another stress it doesn't need — here's what's happening, and what actually helps.</p>
+  <div class="cta-row">
+    <a href="#warming" class="btn btn-primary">See the warming trend ↓</a>
+    <a href="#act" class="btn btn-ghost">What I can do</a>
+  </div>
+
+  <div class="reef-card glass">
+    <svg id="reefSvg" viewBox="0 0 400 400">
+      <g stroke-linecap="round" fill="none">
+        <path class="polyp" data-base="255,140,66" d="M90 340 C85 280, 70 250, 75 210" stroke="#FF8C42" stroke-width="10"/>
+        <path class="polyp" data-base="255,140,66" d="M90 340 C95 290, 110 260, 100 220" stroke="#FF8C42" stroke-width="8"/>
+        <path class="polyp" data-base="255,93,143" d="M90 340 C70 300, 60 270, 40 245" stroke="#FF5D8F" stroke-width="7"/>
+
+        <path class="polyp" data-base="255,93,143" d="M210 350 C205 300, 225 270, 215 230" stroke="#FF5D8F" stroke-width="11"/>
+        <path class="polyp" data-base="255,93,143" d="M210 350 C220 310, 240 290, 235 255" stroke="#FF5D8F" stroke-width="8"/>
+        <path class="polyp" data-base="166,74,201" d="M210 350 C195 305, 180 280, 190 250" stroke="#A64AC9" stroke-width="7"/>
+
+        <path class="polyp" data-base="255,140,66" d="M320 345 C315 300, 330 275, 318 240" stroke="#FF8C42" stroke-width="9"/>
+        <path class="polyp" data-base="255,140,66" d="M320 345 C330 305, 345 285, 335 255" stroke="#FF8C42" stroke-width="6"/>
+      </g>
+      <ellipse class="polyp" data-base="255,93,143" cx="150" cy="355" rx="46" ry="26" fill="#FF5D8F"/>
+      <ellipse class="polyp" data-base="166,74,201" cx="270" cy="360" rx="34" ry="20" fill="#A64AC9"/>
+      <g class="polyp" data-base="255,140,66" fill="#FF8C42" opacity="0.9">
+        <circle cx="60" cy="200" r="5"/>
+        <circle cx="130" cy="185" r="4"/>
+        <circle cx="250" cy="215" r="5"/>
+        <circle cx="300" cy="195" r="4"/>
+      </g>
+    </svg>
+    <div class="reef-caption"><span class="heat-readout" id="heatReadout">+0.0°C</span> · move your cursor over the reef to warm the water</div>
+  </div>
+</header>
+
+<!-- STATS -->
+<div class="stat-band">
+  <div class="stat-card glass-soft">
+    <div class="stat-num">50<span>%</span></div>
+    <div class="stat-label">of the world's coral reefs have died since the 1950s</div>
+  </div>
+  <div class="stat-card glass-soft">
+    <div class="stat-num"><span>1°C</span></div>
+    <div class="stat-label">of sustained ocean warming is enough to trigger mass bleaching</div>
+  </div>
+  <div class="stat-card glass-soft">
+    <div class="stat-num">14,000<span>t</span></div>
+    <div class="stat-label">tons of sunscreen estimated to wash into reefs every year</div>
+  </div>
+</div>
+
+<!-- WARMING -->
+<section id="warming">
+  <div class="two-col">
+    <div>
+      <div class="eyebrow">Why it's happening</div>
+      <h2>Coral doesn't sunburn. It starves.</h2>
+      <p class="body-text">Coral gets its color and most of its food from algae living in its tissue. When water gets too warm, the coral stresses out and expels the algae — leaving behind a bone-white skeleton. That's bleaching. The coral isn't dead yet, but without its algae, it's starving.</p>
+      <p class="body-text">If temperatures drop back down quickly, coral can recover. If the heat lingers — which is happening more often as the oceans warm — the coral dies, and the reef structure it built over centuries goes with it.</p>
+    </div>
+    <div class="art glass">
+      <div class="eyebrow" style="margin-bottom:1.2rem;">Global mass bleaching events</div>
+      <div class="gauge-row">
+        <div class="gauge-year">1998</div>
+        <div class="gauge-bar-track"><div class="gauge-bar" style="width:22%"></div></div>
+        <div class="gauge-pct">~16%</div>
+      </div>
+      <div class="gauge-row">
+        <div class="gauge-year">2010</div>
+        <div class="gauge-bar-track"><div class="gauge-bar" style="width:38%"></div></div>
+        <div class="gauge-pct">~35%</div>
+      </div>
+      <div class="gauge-row">
+        <div class="gauge-year">2016</div>
+        <div class="gauge-bar-track"><div class="gauge-bar" style="width:65%"></div></div>
+        <div class="gauge-pct">~50%</div>
+      </div>
+      <div class="gauge-row">
+        <div class="gauge-year">2024</div>
+        <div class="gauge-bar-track"><div class="gauge-bar" style="width:92%"></div></div>
+        <div class="gauge-pct">~77%</div>
+      </div>
+      <p class="body-text" style="margin-top:1.4rem; font-size:0.82rem;">Share of global reef area exposed to bleaching-level heat stress, by event. The gap between events keeps shrinking — reefs now have less time to recover.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SUNSCREEN -->
+<section id="sunscreen">
+  <div class="two-col reverse">
+    <div class="art drop-diagram glass">
+      <svg viewBox="0 0 300 300">
+        <defs>
+          <linearGradient id="dropGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FF8C42"/>
+            <stop offset="100%" stop-color="#FF5D8F"/>
+          </linearGradient>
+        </defs>
+        <path d="M150 20 C150 20, 100 100, 100 150 C100 183, 122 205, 150 205 C178 205, 200 183, 200 150 C200 100, 150 20, 150 20 Z" fill="url(#dropGrad)"/>
+        <text x="150" y="120" text-anchor="middle" fill="#20081a" font-family="Quicksand" font-size="13" font-weight="700">SPF</text>
+        <circle cx="150" cy="235" r="20" fill="none" stroke="#B9C3E0" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="150" cy="235" r="45" fill="none" stroke="#B9C3E0" stroke-width="1.5" opacity="0.45"/>
+        <circle cx="150" cy="235" r="70" fill="none" stroke="#B9C3E0" stroke-width="1.5" opacity="0.25"/>
+        <circle cx="150" cy="235" r="95" fill="none" stroke="#B9C3E0" stroke-width="1.2" opacity="0.12"/>
+      </svg>
+    </div>
+    <div>
+      <div class="eyebrow">The overlooked threat</div>
+      <h2>It rinses off you.<br>It doesn't rinse off the reef.</h2>
+      <p class="body-text">A lot of divers and snorkelers reapply sunscreen right before getting in the water — but a large share of what's on your skin washes off in the first twenty minutes of a swim. Two common UV filters, oxybenzone and octinoxate, are especially harmful once they're in the water.</p>
+      <ul class="fact-list">
+        <li class="glass-soft"><b>01</b> These chemicals can damage coral DNA and disrupt the growth of young coral before it ever gets the chance to form a reef.</li>
+        <li class="glass-soft"><b>02</b> They increase coral's sensitivity to bleaching, so reefs near popular dive and snorkel sites bleach at lower temperatures than reefs further away.</li>
+        <li class="glass-soft"><b>03</b> Concentrations don't need to be high — trace amounts from a single busy dive site are enough to affect nearby coral over time.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- GAME -->
+<section id="game">
+  <div class="eyebrow" style="justify-content:center;">Try it yourself</div>
+  <h2 style="max-width:20ch; margin-left:auto; margin-right:auto; text-align:center;">Keep the reef alive</h2>
+  <p class="body-text" style="margin:0 auto 2rem; text-align:center;">Pop the rising bubbles before they float away. Leave the suns alone — click too many and the reef overheats.</p>
+
+  <div class="reef-game glass">
+    <div class="game-hud">
+      <div class="hud-item">
+        <span class="hud-label">Score</span>
+        <span class="hud-value" id="gameScore">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">Heat</span>
+        <div class="heat-track"><div class="heat-fill" id="heatFill"></div></div>
+      </div>
+      <button class="btn btn-ghost hud-restart" id="manualRestart" type="button">Restart</button>
+    </div>
+
+    <div class="game-stage" id="gameStage">
+      <div class="sea-animal-layer" id="seaAnimalLayer" aria-hidden="true"></div>
+      <div class="bubble-layer" id="bubbleLayer"></div>
+      <svg class="coral-bottom" id="coralBottom" viewBox="0 0 800 220" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <div class="warming-overlay" id="warmingOverlay"></div>
+      <div class="fact-toast glass-soft" id="factToast"><span id="factText"></span></div>
+      <div class="restart-banner glass" id="restartBanner"><span id="restartMessage"></span></div>
+    </div>
+
+    <p class="game-legend">
+      <span><i class="legend-dot legend-bubble"></i>Good bubble — click it</span>
+      <span><i class="legend-dot legend-sun"></i>Sun — leave it alone</span>
+    </p>
+  </div>
+</section>
+
+<!-- WHAT YOU CAN DO -->
+<section id="act">
+  <div class="eyebrow" style="justify-content:center;">What actually helps</div>
+  <h2 style="max-width:18ch; margin-left:auto; margin-right:auto; text-align:center;">Small changes for anyone who swims, dives, or snorkels</h2>
+  <p class="body-text" style="margin:0 auto; text-align:center;">You don't have to give up sun protection — you just need it to stay on you instead of ending up in the water.</p>
+
+  <div class="checklist-grid">
+    <div class="check-card glass">
+      <div class="icon">1</div>
+      <h3>Check the ingredients</h3>
+      <p>Choose mineral sunscreens using non-nano zinc oxide or titanium dioxide, and skip oxybenzone and octinoxate.</p>
+      <div class="ingredient-tags">
+        <span class="tag avoid">Oxybenzone</span>
+        <span class="tag avoid">Octinoxate</span>
+        <span class="tag ok">Zinc oxide</span>
+      </div>
+    </div>
+    <div class="check-card glass">
+      <div class="icon">2</div>
+      <h3>Cover up instead</h3>
+      <p>A rash guard, wetsuit, or long-sleeve swim shirt protects more skin than sunscreen ever will — and nothing washes off it.</p>
+    </div>
+    <div class="check-card glass">
+      <div class="icon">3</div>
+      <h3>Apply early</h3>
+      <p>Put sunscreen on 20–30 minutes before you get in the water and let it fully absorb, rather than reapplying dockside.</p>
+    </div>
+    <div class="check-card glass">
+      <div class="icon">4</div>
+      <h3>Support your dive operator</h3>
+      <p>Many dive shops now require or sell reef-safe sunscreen. Ask before you book, and follow their briefing.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-final">
+  <div class="glass">
+    <div class="eyebrow" style="justify-content:center;">Before your next trip</div>
+    <h2>Protect your skin. Not at the reef's expense.</h2>
+    <p class="body-text">Reefs took thousands of years to build. The choices made at the surface — what's in the water, and how warm it's getting — decide whether they're still here for the next generation of divers.</p>
+    <div class="cta-row">
+      <a href="#sunscreen" class="btn btn-primary">Review reef-safe ingredients ↑</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>CORAL·watch — a reef UV protection resource</div>
+  <div>Made for people who love the ocean</div>
+</footer>
+
+<script>
+  const reefSvg = document.getElementById('reefSvg');
+  const readout = document.getElementById('heatReadout');
+  const polyps = document.querySelectorAll('.polyp');
+  const bleach = [244, 239, 228];
+
+  function lerp(a, b, t){ return a + (b - a) * t; }
+
+  reefSvg.addEventListener('mousemove', (e) => {
+    const rect = reefSvg.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    const dx = x - 0.5, dy = y - 0.5;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const intensity = Math.min(Math.max(1 - dist / 0.55, 0), 1);
+
+    readout.textContent = '+' + (intensity * 3.2).toFixed(1) + '°C';
+
+    polyps.forEach(p => {
+      const base = (p.dataset.base || '255,140,66').split(',').map(Number);
+      const r = lerp(base[0], bleach[0], intensity);
+      const g = lerp(base[1], bleach[1], intensity);
+      const b = lerp(base[2], bleach[2], intensity);
+      const color = `rgb(${r.toFixed(0)}, ${g.toFixed(0)}, ${b.toFixed(0)})`;
+      if (p.tagName === 'CIRCLE' || p.tagName === 'ELLIPSE') {
+        p.setAttribute('fill', color);
+      } else {
+        p.setAttribute('stroke', color);
+      }
+    });
+  });
+
+  reefSvg.addEventListener('mouseleave', () => {
+    readout.textContent = '+0.0°C';
+    polyps.forEach(p => {
+      const base = (p.dataset.base || '255,140,66').split(',').map(Number);
+      const color = `rgb(${base[0]}, ${base[1]}, ${base[2]})`;
+      if (p.tagName === 'CIRCLE' || p.tagName === 'ELLIPSE') {
+        p.setAttribute('fill', color);
+      } else {
+        p.setAttribute('stroke', color);
+      }
+    });
+  });
+
+  /* ============ REEF MINI-GAME ============ */
+  (function(){
+    const stage        = document.getElementById('gameStage');
+    const bubbleLayer  = document.getElementById('bubbleLayer');
+    const seaLayer     = document.getElementById('seaAnimalLayer');
+    const coralSvg     = document.getElementById('coralBottom');
+    const warmOverlay  = document.getElementById('warmingOverlay');
+    const factToast    = document.getElementById('factToast');
+    const factText     = document.getElementById('factText');
+    const restartBanner= document.getElementById('restartBanner');
+    const restartMsg   = document.getElementById('restartMessage');
+    const scoreEl      = document.getElementById('gameScore');
+    const heatFill     = document.getElementById('heatFill');
+    const svgNS = 'http://www.w3.org/2000/svg';
+
+    const coralColors = ['255,140,66', '255,93,143', '166,74,201'];
+    const coralPieces = [];
+    const CORAL_COUNT = 9;
+    const MAX_SUN_CLICKS = 5;
+
+    let score = 0;
+    let sunClicks = 0;
+    let warming = false;
+    let bubbleTimer = null;
+
+    /* --- build coral field along the bottom of the stage --- */
+    function buildCoralField(){
+      coralSvg.innerHTML = '';
+      coralPieces.length = 0;
+      const spacing = 800 / CORAL_COUNT;
+      for(let i = 0; i < CORAL_COUNT; i++){
+        const cx = spacing * i + spacing / 2 + (Math.random() * 20 - 10);
+        const width = 55 + Math.random() * 35;
+        const height = 70 + Math.random() * 55;
+        const base = coralColors[i % coralColors.length];
+        const bumps = 3 + Math.floor(Math.random() * 2);
+        const bumpW = width / bumps;
+        let d = `M ${cx - width/2} 220 L ${cx - width/2} ${220 - height*0.5}`;
+        for(let b = 0; b < bumps; b++){
+          const bx = cx - width/2 + bumpW * b;
+          const topY = 220 - height + (Math.random() * 14 - 7);
+          d += ` Q ${bx + bumpW*0.25} ${topY} ${bx + bumpW*0.5} ${220 - height*0.65}`;
+          d += ` Q ${bx + bumpW*0.75} ${topY} ${bx + bumpW} ${220 - height*0.5}`;
+        }
+        d += ` L ${cx + width/2} 220 Z`;
+
+        const g = document.createElementNS(svgNS, 'g');
+        g.setAttribute('class', 'coral-piece');
+        const path = document.createElementNS(svgNS, 'path');
+        path.setAttribute('d', d);
+        path.setAttribute('fill', `rgb(${base})`);
+        g.appendChild(path);
+        coralSvg.appendChild(g);
+        coralPieces.push(g);
+      }
+    }
+
+    /* --- turn one healthy coral piece grey when a good bubble is missed --- */
+    function greyOutCoral(){
+      const healthy = coralPieces.filter(c => !c.classList.contains('grey') && !c.classList.contains('dead'));
+      if(healthy.length){
+        healthy[Math.floor(Math.random() * healthy.length)].classList.add('grey');
+      }
+      const allGone = coralPieces.every(c => c.classList.contains('grey') || c.classList.contains('dead'));
+      if(allGone){
+        triggerWarming('neglect');
+      }
+    }
+
+    function updateHUD(){
+      scoreEl.textContent = score;
+      heatFill.style.width = Math.min(100, (sunClicks / MAX_SUN_CLICKS) * 100) + '%';
+    }
+
+    /* --- bubbles --- */
+    function spawnBubble(){
+      if(warming) return;
+      const isSun = Math.random() < 0.28;
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble ' + (isSun ? 'sun' : 'good');
+      bubble.textContent = isSun ? '☀️' : '🫧';
+      const size = 38 + Math.random() * 22;
+      bubble.style.left = (6 + Math.random() * 86) + '%';
+      bubble.style.width = size + 'px';
+      bubble.style.height = size + 'px';
+      bubble.style.fontSize = (size * 0.5) + 'px';
+      const duration = 5.5 + Math.random() * 3;
+      bubble.style.animationDuration = duration + 's';
+
+      let popped = false;
+      bubble.addEventListener('click', () => {
+        if(popped || warming) return;
+        popped = true;
+        if(isSun){
+          sunClicks++;
+          updateHUD();
+          bubble.remove();
+          if(sunClicks >= MAX_SUN_CLICKS){
+            triggerWarming('sun');
+          }
+        } else {
+          score++;
+          updateHUD();
+          bubble.classList.add('pop');
+          setTimeout(() => bubble.remove(), 180);
+        }
+      });
+      bubble.addEventListener('animationend', () => {
+        if(popped) return;
+        if(!isSun) greyOutCoral();
+        bubble.remove();
+      });
+
+      bubbleLayer.appendChild(bubble);
+    }
+
+    /* --- warming event: too many suns clicked, or every coral grey --- */
+    function triggerWarming(reason){
+      if(warming) return;
+      warming = true;
+      clearInterval(bubbleTimer);
+      bubbleLayer.querySelectorAll('.bubble').forEach(b => b.remove());
+      warmOverlay.classList.add('active');
+
+      setTimeout(() => {
+        coralPieces.forEach(c => { c.classList.remove('grey'); c.classList.add('dead'); });
+        restartMsg.textContent = reason === 'sun'
+          ? 'Too much sun — the reef overheated and bleached.'
+          : 'Too many missed bubbles — the reef lost all its color.';
+        restartBanner.classList.add('active');
+      }, 1400);
+
+      setTimeout(restartGame, 4000);
+    }
+
+    function restartGame(){
+      score = 0;
+      sunClicks = 0;
+      updateHUD();
+      coralPieces.forEach(c => c.classList.remove('grey', 'dead'));
+      bubbleLayer.querySelectorAll('.bubble').forEach(b => b.remove());
+      warmOverlay.classList.remove('active');
+      restartBanner.classList.remove('active');
+      warming = false;
+      clearInterval(bubbleTimer);
+      bubbleTimer = setInterval(spawnBubble, 1100);
+    }
+
+    /* --- decorative sea life, non-interactive, purely visual --- */
+    const seaAnimals = ['🐠', '🐟', '🐡', '🐢', '🦑', '🐙'];
+    function spawnSeaAnimal(){
+      const el = document.createElement('span');
+      el.className = 'sea-animal' + (Math.random() < 0.5 ? ' reverse' : '');
+      el.textContent = seaAnimals[Math.floor(Math.random() * seaAnimals.length)];
+      const duration = 9 + Math.random() * 6;
+      el.style.top = (8 + Math.random() * 55) + '%';
+      el.style.animationDuration = duration + 's';
+      seaLayer.appendChild(el);
+      setTimeout(() => el.remove(), duration * 1000 + 200);
+    }
+    setInterval(spawnSeaAnimal, 4500);
+
+    /* --- facts, on an exact 30 second cadence --- */
+    const reefFacts = [
+      "Two common sunscreen chemicals, oxybenzone and octinoxate, can damage coral DNA even in tiny concentrations.",
+      "About 50% of the world's coral reefs have died since the 1950s.",
+      "A sustained 1°C rise in ocean temperature is enough to trigger mass bleaching.",
+      "An estimated 14,000 tons of sunscreen wash into reefs every year.",
+      "Bleached coral isn't dead yet — if the water cools quickly, it can still recover.",
+      "Mineral sunscreens with non-nano zinc oxide don't harm coral the way chemical filters do."
+    ];
+    let factIndex = 0;
+    function showFact(){
+      factText.textContent = reefFacts[factIndex % reefFacts.length];
+      factIndex++;
+      factToast.classList.add('active');
+      setTimeout(() => factToast.classList.remove('active'), 6000);
+    }
+    setInterval(showFact, 30000);
+
+    /* --- init --- */
+    document.getElementById('manualRestart').addEventListener('click', restartGame);
+    buildCoralField();
+    updateHUD();
+    spawnSeaAnimal();
+    bubbleTimer = setInterval(spawnBubble, 1100);
+    spawnBubble();
+  })();
+</script>
+
+</body>
+</html>
